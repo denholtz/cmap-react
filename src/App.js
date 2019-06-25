@@ -1,25 +1,47 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
+
 import './App.css';
+import Routes from './routes';
+
+const theme = createMuiTheme({
+  palette: {
+    secondary: {
+      main: grey[900]
+    },
+    primary: {
+      main: grey[600]
+    }
+  },
+  typography: {
+    useNextVariants: true,
+    fontFamily: [
+      '"Lato"',
+      'sans-serif'
+    ].join(',')
+  },
+  overrides: {
+    MuiOutlinedInput: {
+      input: {
+        padding: '12px 14px'
+      }
+    },
+    MuiFormControl: {
+      marginNormal: {
+        marginTop: '8px'
+      }
+    }
+  }
+});
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <MuiThemeProvider theme={theme}>
+          <Routes />
+        </MuiThemeProvider>
       </div>
     );
   }
