@@ -5,14 +5,12 @@ import Home from './Components/Home';
 import Catalog from './Components/Catalog';
 import Register from './Components/Register';
 import Visualization from './Components/Visualization';
-import TopNavBar from './Components/TopNavBar';
 import SnackbarWrapper from './Components/SnackbarWrapper';
 import Charts from './Components/Charts';
+import GlobalUIComponentWrapper from './Components/GlobalUIComponentWrapper';
 
 export default props => (
     <BrowserRouter>
-        <TopNavBar/>
-        <SnackbarWrapper/>
         <Switch>
           <Route exact path='/apikeymanagement' component={ Home } />
           <Route exact path='/' component={ Catalog } />

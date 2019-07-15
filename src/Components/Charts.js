@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines, XAxis, YAxis, VerticalBarSeries} from 'react-vis';
-
-import LoadingSpinner from './LoadingSpinner';
-
-import states from '../asyncRequestStates';
+import {XYPlot, VerticalGridLines, HorizontalGridLines, XAxis, YAxis, VerticalBarSeries} from 'react-vis';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -19,7 +15,7 @@ const mapDispatchToProps = {
 
 const styles = (theme) => ({
     chart: {
-        margin: 'auto'
+        margin: '300px 0 0 70px'
     }
 })
 
@@ -40,8 +36,10 @@ class Charts extends Component {
             {x: 9, y: 0}
           ];
 
+        const { classes } = this.props;
+
         return (
-            <div className="chart">
+            <div className={classes.chart}>
                 <XYPlot height={300} width= {300}>
                 <VerticalGridLines />
                 <HorizontalGridLines />

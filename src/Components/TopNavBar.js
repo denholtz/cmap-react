@@ -80,7 +80,7 @@ class TopNavBar extends Component {
 
     render(){
 
-        // const { classes } = this.props;
+        const { classes } = this.props;
 
         return (
             <AppBar position="sticky">
@@ -97,7 +97,7 @@ class TopNavBar extends Component {
                         <Tab key='7' label='Charts' component={Link} to={{pathname: '/visualization/charts'}}/>
                     </Tabs>                    
                 </Toolbar>
-                <LoginDialog clearState={this.clearState} username={this.state.username} password={this.state.password} handleChange={this.handleChange}/>
+                {/* <LoginDialog clearState={this.clearState} username={this.state.username} password={this.state.password} handleChange={this.handleChange}/> */}
             </AppBar>            
         )
     }

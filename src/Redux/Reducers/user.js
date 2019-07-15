@@ -10,7 +10,8 @@ export default function(state, action) {
     case userActionTypes.LOGIN_REQUEST_CLEAR_ERROR: return {...state, userLoginError: null}
 
     case userActionTypes.STORE_INFO: return {...state, user: action.payload.user}
-    case userActionTypes.DESTROY_INFO: return {...state, user: null, apiKeys: null}
+    case userActionTypes.DESTROY_INFO: return {...state, user: null, apiKeys: null, clearLoginDialog: true}
+    case userActionTypes.LOGIN_DIALOG_WAS_CLEARED: return {...state, clearLoginDialog: false}
 
     case userActionTypes.VALIDATION_REQUEST_PROCESSING: return {...state, userValidationState: states.inProgress}
     case userActionTypes.VALIDATION_REQUEST_FAILURE: return {...state, userValidationState: states.failed}

@@ -7,6 +7,7 @@ import { showLoginDialog } from '../Redux/actions/ui';
 
 import ApiKeyManagement from './ApiKeyManagement';
 import LoginRequiredPrompt from './LoginRequiredPrompt';
+import TopNavBar from './TopNavBar';
 
 
 const mapStateToProps = (state, ownProps) => ({
@@ -34,6 +35,7 @@ class Home extends Component {
 
         return (
             <React.Fragment>
+                <TopNavBar/>
                 {this.props.user && <ApiKeyManagement/>}
             </React.Fragment>
             

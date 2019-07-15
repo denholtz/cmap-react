@@ -7,8 +7,11 @@ export const queryRequestSend = (query) => ({
     }
 })
 
-export const queryRequestSuccess = () => ({
-    type: visualizationActionTypes.QUERY_REQUEST_SUCCESS
+export const queryRequestSuccess = (data) => ({
+    type: visualizationActionTypes.QUERY_REQUEST_SUCCESS,
+    payload: {
+        data
+    }
 })
 
 export const queryRequestFailure = () => ({
@@ -19,6 +22,28 @@ export const queryRequestProcessing = () => ({
     type: visualizationActionTypes.QUERY_REQUEST_PROCESSING
 })
 
+export const storedProcedureRequestSend = (parameters) => ({
+    type: visualizationActionTypes.STORED_PROCEDURE_REQUEST_SEND,
+    payload: {
+        parameters
+    }
+})
+
+export const storedProcedureRequestSuccess = (data) => ({
+    type: visualizationActionTypes.STORED_PROCEDURE_REQUEST_SUCCESS,
+    payload: {
+        data
+    }
+})
+
+export const storedProcedureRequestFailure = () => ({
+    type: visualizationActionTypes.STORED_PROCEDURE_REQUEST_FAILURE
+})
+
+export const storedProcedureRequestProcessing = () => ({
+    type: visualizationActionTypes.STORED_PROCEDURE_REQUEST_PROCESSING
+})
+
 export const addLayer = (newLayer) => ({
     type: visualizationActionTypes.ADD_LAYER,
     payload: {
@@ -26,9 +51,23 @@ export const addLayer = (newLayer) => ({
     }
 })
 
-export const storeSampleData = (sampleData => ({
+export const storeSampleData = sampleData => ({
     type: visualizationActionTypes.STORE_SAMPLE_DATA,
     payload: {
         sampleData
     }
-}))
+})
+
+export const renderMap = (mapInfo) => ({
+    type: visualizationActionTypes.RENDER_MAP,
+    payload: {
+        mapInfo
+    }
+})
+
+export const renderChart = (chartInfo) => ({
+    type: visualizationActionTypes.RENDER_CHART,
+    payload: {
+        chartInfo
+    }
+})

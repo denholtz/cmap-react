@@ -12,6 +12,12 @@ const postOptions = {
     headers: {"Content-Type": "application/json"}
 }
 
+const storedProcedureParametersToUri = (parameters) => {
+    return Object.keys(parameters).reduce(function (queryString, key, i) {
+        return `${queryString}${i===0 ? '' : '&&'}${key}=${parameters[key]}`;
+      }, '');
+}
+
 const api = {};
 api.user = {};
 api.dataRetrieval = {};
@@ -94,6 +100,36 @@ api.visualization.queryRequest = async(query) => {
     })
 
     let response = await fetch(apiUrl + '/dataretrieval/query?query=' + query, fetchOptions);
+
+    if(!response.ok) return false;
+
+    let body = response.body;
+    let reader = body.getReader();
+    let readerIsDone = false;
+
+    while(!readerIsDone){
+        let chunk = await reader.read();
+        if(chunk.done) {
+            readerIsDone = true;
+        }
+        else {
+            ndjsonParser.write(decoder.decode(chunk.value));
+        };
+    }
+    return vizData;
+}
+
+api.visualization.storedProcedureRequest = async(parameters) => {
+    const decoder = new TextDecoder();
+    let vizData = [];
+
+    let ndjsonParser = ndjson.parse();
+
+    ndjsonParser.on('data', data => {
+        vizData.push(data);
+    })
+
+    let response = await fetch(apiUrl + '/dataretrieval/sp?' + storedProcedureParametersToUri(parameters), fetchOptions);
 
     if(!response.ok) return false;
 

@@ -5,6 +5,8 @@ import grey from '@material-ui/core/colors/grey';
 import './App.css';
 import Routes from './routes';
 
+import GlobalUIComponentWrapper from './Components/GlobalUIComponentWrapper';
+
 const theme = createMuiTheme({
   palette: {
     secondary: {
@@ -40,6 +42,7 @@ class App extends Component {
     return (
       <div className="App">
         <MuiThemeProvider theme={theme}>
+          <GlobalUIComponentWrapper/>
           <Routes />
         </MuiThemeProvider>
       </div>

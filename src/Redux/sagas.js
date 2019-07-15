@@ -97,6 +97,18 @@ function* queryRequest(action){
     yield put(visualizationActions.queryRequestSuccess());
 }
 
+function* storedProcedureRequest(action){
+    yield put(visualizationActions.storedProcedureRequestProcessing());
+    let result = yield call(api.visualization.storedProcedureRequest, action.payload.parameters);
+    if(!result){
+        yield put(visualizationActions.storedProcedureRequestFailure());
+        yield put(interfaceActions.snackbarOpen("Request failed"));
+    } else {
+        yield put(visualizationActions.storedProcedureRequestSuccess({[action.payload.parameters.fields]:result}));
+        yield put(interfaceActions.snackbarOpen("Your dataset is ready"));
+    }
+}
+
 function* watchUserLogin() {
     yield takeLatest(userActionTypes.LOGIN_REQUEST_SEND, userLogin);
 }
@@ -128,6 +140,10 @@ function* watchKeyCreationRequest(){
 function* watchQueryRequest(){
     yield takeLatest(visualizationActionTypes.QUERY_REQUEST_SEND, queryRequest);
 }
+
+function* watchStoredProcedureRequest(){
+    yield takeLatest(visualizationActionTypes.STORED_PROCEDURE_REQUEST_SEND, storedProcedureRequest);
+}
   
 export default function* rootSaga() {
     yield all([
@@ -138,7 +154,8 @@ export default function* rootSaga() {
         watchCatalogRetrieval(),
         watchKeyRetrieval(),
         watchKeyCreationRequest(),
-        watchQueryRequest()
+        watchQueryRequest(),
+        watchStoredProcedureRequest()
     ])
 }
   

@@ -41,6 +41,10 @@ export const destroyInfo = () => ({
     type: userActionTypes.DESTROY_INFO
 })
 
+export const loginDialogWasCleared = () => ({
+    type: userActionTypes.LOGIN_DIALOG_WAS_CLEARED
+})
+
 // Validation actions
 export const userValidationRequestSend = (username, email) => ({
     type: userActionTypes.VALIDATION_REQUEST_SEND,

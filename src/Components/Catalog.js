@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import AGGridWrapper from './AGGridWrapper';
 import LoadingSpinner from './LoadingSpinner';
+import TopNavBar from './TopNavBar';
 
 import { retrievalRequestSend } from '../Redux/actions/catalog';
 import states from '../asyncRequestStates';
@@ -39,6 +40,7 @@ class Catalog extends Component {
         let content = this.determineContent();
         return (
             <React.Fragment>
+                <TopNavBar/>
                 {content}
             </React.Fragment>
         )

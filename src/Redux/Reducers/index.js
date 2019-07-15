@@ -27,6 +27,8 @@ const initialState = {
     apiKeyRetrievalState: null,
     apiKeyCreationState: null,
 
+    clearLoginDialog: false,
+
     userLoginState: null,
 
     userValidationState: null,
@@ -34,9 +36,12 @@ const initialState = {
     userRegistrationState: null,
 
     // Visualization state pieces
-    layers: null, //not currently in use
-    sampleVizData: null,
-    queryRequestState: null
+    maps: [],
+    charts: [],
+    data: {},
+    sampleData: null,
+    queryRequestState: null,
+    storedProcedureRequestState: null
 }
 
 const reducedReducer = reduceReducers(initialState, catalog, user, ui, visualization);

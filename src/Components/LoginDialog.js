@@ -13,8 +13,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import states from '../asyncRequestStates';
 
-import { withRouter } from "react-router";
-
 import { showLoginDialog, hideLoginDialog, restoreInterfaceDefaults } from '../Redux/actions/ui';
 import { logOut, userLoginRequestSend } from '../Redux/actions/user';
 
@@ -125,4 +123,4 @@ class LoginDialog extends Component{
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(LoginDialog)));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginDialog));
