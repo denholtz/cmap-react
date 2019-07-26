@@ -38,7 +38,6 @@ const initialState = {
     // Visualization state pieces
     maps: [],
     charts: [],
-    data: {},
     sampleData: null,
     queryRequestState: null,
     storedProcedureRequestState: null

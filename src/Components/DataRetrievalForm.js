@@ -10,16 +10,10 @@ import Select from 'react-select';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-// import Button from '@material-ui/core/Button';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import FormLabel from '@material-ui/core/FormLabel';
-// import Radio from '@material-ui/core/Radio';
-// import RadioGroup from '@material-ui/core/RadioGroup';
-// import Switch from '@material-ui/core/Switch';
-// import { capitalize } from '@material-ui/core/utils';
 import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+
+import { DatePicker } from "@material-ui/pickers";
 
 import { 
     BarChart,
@@ -32,6 +26,9 @@ import {
 
 import { storedProcedureRequestSend } from '../Redux/actions/visualization';
 import { retrievalRequestSend } from '../Redux/actions/catalog';
+
+import vizTypes from '../Enums/visualizationTypes';
+import vizSubTypes from '../Enums/visualizationSubTypes';
 
 const styles = (theme) => ({
     dataRetrievalFormPaper: {
@@ -68,12 +65,16 @@ const styles = (theme) => ({
         width: '100px',
         height:'40px',
         margin: 'auto 0',
-        backgroundColor: theme.palet
+        backgroundColor: theme.palette
     },
 
     visualizeButtonText: {
         dominantBaseline: "middle",
         textAnchor: "middle"
+    },
+
+    displayNone: {
+        display: 'none'
     }
 })
 
@@ -89,22 +90,52 @@ const mapDispatchToProps = {
 }
 
 const visualizationSpeedDialActions = [
-    {icon: <Map/>, name: 'Section Map' },
-    {icon: <Timeline/>, name: 'Time Series'},
-    {icon: <BarChart/>, name: 'Histogram'},
-    {icon: <Waves/>, name: 'Depth Profile'},
-    {icon: <Language/>, name: 'Geospatial Map'},
-    {icon: <LeakAdd/>, name: 'Contour Map'}
+    {icon: <Map/>, name: vizSubTypes.sectionMap },
+    {icon: <Timeline/>, name: vizSubTypes.timeSeries},
+    {icon: <BarChart/>, name: vizSubTypes.histogram},
+    {icon: <Waves/>, name: vizSubTypes.depthProfile},
+    {icon: <Language/>, name: vizSubTypes.geospatialMap},
+    {icon: <LeakAdd/>, name: vizSubTypes.contourMap},
+    {icon: <Map/>, name: vizSubTypes.hexMap}
 ];
 
-const mapVizTypeToStoredProcedure = (vizType) => {
+const mapVizType = (vizType) => {
     const mapping = {
-        'Section Map': 'uspSectionMap',
-        'Time Series': 'uspTimeSeries',
-        'Histogram': 'uspSpaceTime',
-        'Depth Profile': 'uspDepthProfile',
-        'Geospatial Map': 'uspSpaceTime',
-        'Contour Map': 'uspSpaceTime'
+        [vizSubTypes.sectionMap]: {
+            sp: 'uspSectionMap',
+            type: vizTypes.chart,
+            subType: vizSubTypes.sectionMap
+        }, 
+        [vizSubTypes.timeSeries]: {
+            sp: 'uspTimeSeries',
+            type: vizTypes.chart,
+            subType: vizSubTypes.timeSeries
+        },
+        [vizSubTypes.histogram]: {
+            sp: 'uspSpaceTime',
+            type: vizTypes.chart,
+            subType: vizSubTypes.histogram
+        },
+        [vizSubTypes.depthProfile]: {
+            sp: 'uspDepthProfile',
+            type: vizTypes.chart,
+            subType: vizSubTypes.depthProfile
+        },
+        [vizSubTypes.geospatialMap]: {
+            sp: 'uspSpaceTime',
+            type: vizTypes.map,
+            subType: vizSubTypes.geospatialMap
+        },
+        [vizSubTypes.contourMap]: {
+            sp: 'uspSpaceTime',
+            type: vizTypes.chart,
+            subType: vizSubTypes.contourMap
+        },
+        [vizSubTypes.hexMap]: {
+            sp: 'uspSpaceTime',
+            type:vizTypes.map,
+            subType: vizSubTypes.hexMap
+        }
     }
 
     return mapping[vizType];
@@ -112,17 +143,16 @@ const mapVizTypeToStoredProcedure = (vizType) => {
 
 class DataRetrievalForm extends Component {
     state = {
-        spName: 'uspSpaceTime',
         tableName: [],
         fields:[],
-        depth1: '',
-        depth2: '',
-        dt1: '',
-        dt2: '',
-        lat1: '',
-        lat2: '',
-        lon1: '',
-        lon2: '',
+        depth1: '0',
+        depth2: '0',
+        dt1: '2017-05-15',
+        dt2: '2017-05-15',
+        lat1: '30',
+        lat2: '40',
+        lon1: '-60',
+        lon2: '-50',
 
         visualizationSpeedDialOpen: false,
     }
@@ -135,9 +165,22 @@ class DataRetrievalForm extends Component {
         this.setState({[event.target.name]: event.target.value})
     };
 
+    handleStartDateChange = (date) => {
+        this.setState({...this.state, dt1:date.toISOString().slice(0,10)});
+        // console.log(date);
+        // console.log(date.toISODate());
+    }
+
+    handleEndDateChange = (date) => {
+        this.setState({...this.state, dt2:date.toISOString().slice(0,10)});
+        // console.log(date);
+        // console.log(date.toISODate());
+    }
+
     onVisualize = (vizType) => {
         const { depth1, depth2, dt1, dt2, lat1, lat2, lon1, lon2 } = this.state;
-        let payload = {
+        let mapping = mapVizType(vizType);
+        let parameters = {
             depth1,
             depth2,
             dt1,
@@ -147,9 +190,16 @@ class DataRetrievalForm extends Component {
             lon1,
             lon2,
             fields: this.state.fields && this.state.fields.map(field => field.value)[0],
-            tableName: this.state.fields.map(field => field.data.tableName)[0],
-            spName: mapVizTypeToStoredProcedure(vizType)
+            tableName: this.state.fields && this.state.fields.map(field => field.data.tableName)[0],
+            spName: mapping.sp
         };
+
+        let payload = {
+            parameters,
+            type: mapping.type,
+            subType: mapping.subType,
+            metaData: this.state.fields && this.state.fields[0]
+        }
     
         this.props.storedProcedureRequestSend(payload);
     }
@@ -178,11 +228,11 @@ class DataRetrievalForm extends Component {
     }
 
     handleVisualizationSpeedDialOpen = () => {
-        this.setState({visualizationSpeedDialOpen: true});
+        if(this.state.fields && this.state.fields.length) this.setState({visualizationSpeedDialOpen: true});
     }
 
     handleVisualizationSpeedDialClick= () => {
-        this.setState({visualizationSpeedDialOpen: !this.state.visualizationSpeedDialOpen});
+        if(this.state.fields && this.state.fields.length) this.setState({visualizationSpeedDialOpen: !this.state.visualizationSpeedDialOpen});
     }
 
     render() {
@@ -198,7 +248,7 @@ class DataRetrievalForm extends Component {
             || [];
 
         return (
-            <div>
+            <div className={this.props.showUI ? '' : classes.displayNone}>
                 <Paper className={classes.dataRetrievalFormPaper}>
                         <Select
                             isMulti
@@ -219,31 +269,37 @@ class DataRetrievalForm extends Component {
                         />
                         <Grid container spacing={2}>
                             <Grid item xs={3}>
-                                <TextField
+                                <DatePicker
                                     id="startDate"
                                     label="Start Date"
-                                    type="date"
                                     name="dt1"
+                                    format='yyyy-MM-dd'
+                                    disableFuture
+                                    autoOk
+                                    value={this.state.dt1}
+                                    onChange={this.handleStartDateChange}
+                                    inputVariant='outlined'
+                                    variant='inline'
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.dt1}
-                                    onChange={this.handleChange}
-                                    variant='outlined'
                                 />
                             </Grid>  
                             <Grid item xs={3}>
-                                <TextField
+                                <DatePicker
                                     id="endDate"
                                     label="End Date"
-                                    type="date"
                                     name="dt2"
+                                    format='yyyy-MM-dd'
+                                    disableFuture
+                                    autoOk
+                                    value={this.state.dt2}
+                                    onChange={this.handleEndDateChange}
+                                    inputVariant='outlined'
+                                    variant='inline'
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.dt2}
-                                    onChange={this.handleChange}
-                                    variant='outlined'
                                 />
                             </Grid>  
                             <Grid item xs={3}>
@@ -327,6 +383,7 @@ class DataRetrievalForm extends Component {
                         </Grid>
                         <SpeedDial
                             ariaLabel="Visualization Speed Dial"
+                            disabled
                             ButtonProps={{
                                 variant: 'round',
                                 classes: {

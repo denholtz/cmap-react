@@ -11,7 +11,7 @@ const styles = (theme) => ({
         padding: theme.spacing(0.5),
         position:'fixed',
         left: '10px',
-        top: '90px',
+        top: '170px',
         zIndex: 2,
         textDecoration:'none',
         cursor: 'pointer'
@@ -23,13 +23,13 @@ const styles = (theme) => ({
 })
 
 const GoBackButton = (props) => {
-    const { classes, showCharts } = props;
+    const { classes, showUI } = props;
 
     return (
         <div>
-            <Paper className={classes.buttonPaper} onClick={props.toggleChartView}>
+            <Paper className={classes.buttonPaper} onClick={props.toggleShowUI}>
                 <img src="https://simonscmap.com/images/catalog/coverage_global.png" alt="Globe" height="36" width="36"/>
-                <h6 className={classes.goBackText}>{showCharts ? 'Maps' : 'Charts'}</h6>
+                <h6 className={classes.goBackText}>{showUI ? 'Hide UI' : 'Show UI'}</h6>
             </Paper>
         </div>
     )

@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import RegistrationCard from './RegistrationCard';
+import TopNavBar from './TopNavBar';
 
 import { registrationNextActiveStep, registrationPreviousActiveStep } from '../Redux/actions/ui';
 import { userRegistrationRequestSend, userValidationRequestSend } from '../Redux/actions/user';
@@ -269,56 +270,60 @@ class RegistrationStepper extends Component {
         const cardInfoArray = getCardInfo();
 
         return (
-        <div className={classes.root}>
-            <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => {
-                return (
-                <Step key={label}>
-                    <StepLabel>{label}</StepLabel>
-                </Step>
-                );
-            })}
-            </Stepper>
-            <div>
-            {activeStep === steps.length ? (
-                <div>
-                <Typography className={classes.instructions}>
-                    Registration Completed!
-                </Typography>
-                </div>
-            ) : (
-                <div>
-                    <RegistrationCard 
-                        inputFieldState={{...this.state.cards[this.props.registrationActiveStep]}} 
-                        inputFieldInfo={{...cardInfoArray[this.props.registrationActiveStep]}}
-                        onChange={this.handleChange}
-                    />
+            <React.Fragment>
+                <TopNavBar/>
+                <div className={classes.root}>
+                    
+                    <Stepper activeStep={activeStep}>
+                    {steps.map((label, index) => {
+                        return (
+                        <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                        </Step>
+                        );
+                    })}
+                    </Stepper>
                     <div>
-                        <Button
-                        disabled={activeStep === 0}
-                        onClick={this.handleBack}
-                        className={classes.button}
-                        >
-                            Back
-                        </Button>
+                    {activeStep === steps.length ? (
+                        <div>
+                        <Typography className={classes.instructions}>
+                            Registration Completed!
+                        </Typography>
+                        </div>
+                    ) : (
+                        <div>
+                            <RegistrationCard 
+                                inputFieldState={{...this.state.cards[this.props.registrationActiveStep]}} 
+                                inputFieldInfo={{...cardInfoArray[this.props.registrationActiveStep]}}
+                                onChange={this.handleChange}
+                            />
+                            <div>
+                                <Button
+                                disabled={activeStep === 0}
+                                onClick={this.handleBack}
+                                className={classes.button}
+                                >
+                                    Back
+                                </Button>
 
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.handleNext}
-                            className={classes.button}
-                            disabled={!this.currentCardIsValid() || this.props.userValidationState === states.inProgress}
-                        >
-                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                        </Button>
-                        {this.props.userValidationState === states.inProgress && <CircularProgress size={24} className= {classes.buttonProgress} />}
-                        {this.props.userValidationState === states.failed && <p>That username or email is already in use. Please enter a different username or email address.</p>}
-                        {this.props.userRegistrationState === states.failed && <p>Registration failed. Please try again.</p>}
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.handleNext}
+                                    className={classes.button}
+                                    disabled={!this.currentCardIsValid() || this.props.userValidationState === states.inProgress}
+                                >
+                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                </Button>
+                                {this.props.userValidationState === states.inProgress && <CircularProgress size={24} className= {classes.buttonProgress} />}
+                                {this.props.userValidationState === states.failed && <p>That username or email is already in use. Please enter a different username or email address.</p>}
+                                {this.props.userRegistrationState === states.failed && <p>Registration failed. Please try again.</p>}
+                            </div>
+                        </div>
+                    )}
                     </div>
                 </div>
-            )}
-            </div>
-        </div>
+            </React.Fragment>
         );
   }
 }

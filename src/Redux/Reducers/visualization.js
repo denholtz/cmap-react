@@ -9,14 +9,7 @@ export default function(state, action) {
         
         case visualizationActionTypes.STORED_PROCEDURE_REQUEST_PROCESSING: return {...state, storedProcedureRequestState: states.inProgress}
         case visualizationActionTypes.STORED_PROCEDURE_REQUEST_FAILURE: return {...state, storedProcedureRequestState: states.failed}
-        case visualizationActionTypes.STORED_PROCEDURE_REQUEST_SUCCESS: return {
-            ...state, 
-            storedProcedureRequestState: states.succeeded,
-            data: {
-                ...state.data,
-                ...action.payload.data
-            }
-        }
+        case visualizationActionTypes.STORED_PROCEDURE_REQUEST_SUCCESS: return {...state, storedProcedureRequestState: states.succeeded}
 
 
         case visualizationActionTypes.ADD_LAYER: return { // Not currently in use
@@ -29,15 +22,24 @@ export default function(state, action) {
             sampleData: action.payload.sampleData
         }
 
-        case visualizationActionTypes.RENDER_MAP: return {
+        case visualizationActionTypes.ADD_MAP: return {
             ...state,
-            // maps: [...state.maps, action.payload.mapInfo]
-            maps: [action.payload.mapInfo]
+            maps: [...state.maps, action.payload.mapInfo]
         }
 
-        case visualizationActionTypes.RENDER_CHART: return {
+        case visualizationActionTypes.ADD_CHART: return {
             ...state,
             charts: [...state.charts, action.payload.chartInfo]
+        }
+
+        case visualizationActionTypes.CLEAR_CHARTS: return {
+            ...state,
+            charts: []
+        }
+
+        case visualizationActionTypes.CLEAR_MAPS: return {
+            ...state,
+            maps: []
         }
 
         default: return state;

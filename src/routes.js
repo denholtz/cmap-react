@@ -16,7 +16,6 @@ export default props => (
           <Route exact path='/' component={ Catalog } />
           <Route exact path='/register' component={ Register } />
           <Route exact path='/visualization' component={ Visualization } />
-          <Route exact path='/visualization/charts' component={ Charts } />
         </Switch>
     </BrowserRouter>
   )

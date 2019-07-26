@@ -22,11 +22,9 @@ export const queryRequestProcessing = () => ({
     type: visualizationActionTypes.QUERY_REQUEST_PROCESSING
 })
 
-export const storedProcedureRequestSend = (parameters) => ({
+export const storedProcedureRequestSend = (storedProcedureInfo) => ({
     type: visualizationActionTypes.STORED_PROCEDURE_REQUEST_SEND,
-    payload: {
-        parameters
-    }
+    payload: {...storedProcedureInfo}
 })
 
 export const storedProcedureRequestSuccess = (data) => ({
@@ -58,16 +56,24 @@ export const storeSampleData = sampleData => ({
     }
 })
 
-export const renderMap = (mapInfo) => ({
-    type: visualizationActionTypes.RENDER_MAP,
+export const addMap = (mapInfo) => ({
+    type: visualizationActionTypes.ADD_MAP,
     payload: {
         mapInfo
     }
 })
 
-export const renderChart = (chartInfo) => ({
-    type: visualizationActionTypes.RENDER_CHART,
+export const addChart = (chartInfo) => ({
+    type: visualizationActionTypes.ADD_CHART,
     payload: {
         chartInfo
     }
+})
+
+export const clearCharts = () => ({
+    type: visualizationActionTypes.CLEAR_CHARTS
+})
+
+export const clearMaps = () => ({
+    type: visualizationActionTypes.CLEAR_MAPS
 })

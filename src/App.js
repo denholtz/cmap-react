@@ -7,6 +7,9 @@ import Routes from './routes';
 
 import GlobalUIComponentWrapper from './Components/GlobalUIComponentWrapper';
 
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
 const theme = createMuiTheme({
   palette: {
     secondary: {
@@ -38,14 +41,29 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
+
+  componentDidCatch = (error, info) => {
+    alert('Something went wrong!');
+    console.log('Error:');
+    console.log(error);
+    console.log('Info');
+    console.log(info);
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
   render() {
     return (
-      <div className="App">
-        <MuiThemeProvider theme={theme}>
-          <GlobalUIComponentWrapper/>
-          <Routes />
-        </MuiThemeProvider>
-      </div>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <div className="App">
+          <MuiThemeProvider theme={theme}>
+            <GlobalUIComponentWrapper/>
+            <Routes />
+          </MuiThemeProvider>
+        </div>
+      </MuiPickersUtilsProvider>
     );
   }
 }

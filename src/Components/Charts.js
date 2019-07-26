@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {XYPlot, VerticalGridLines, HorizontalGridLines, XAxis, YAxis, VerticalBarSeries} from 'react-vis';
-
 import { withStyles } from '@material-ui/core/styles';
 
-const mapStateToProps = (state, ownProps) => ({
+import Plot from 'react-plotly.js';
 
+import subType from '../Enums/visualizationSubTypes';
+
+const mapStateToProps = (state, ownProps) => ({
+    charts: state.charts
 })
 
 const mapDispatchToProps = {
@@ -14,39 +16,154 @@ const mapDispatchToProps = {
 }
 
 const styles = (theme) => ({
-    chart: {
-        margin: '300px 0 0 70px'
+    chartsWrapperUIHidden: {
+        margin: '60px 0 0 100px'
+    },
+
+    chartsWrapper: {
+        margin: '300px 0 0 100px'
     }
 })
+
+const handleContourMap = (chart) => ({
+    data:[
+        {
+            x: chart.data.map(row => row.lon),
+            y: chart.data.map(row => row.lat),
+            z: chart.data.map(row => row[chart.parameters.fields]),
+            name: chart.parameters.fields,
+            type: 'contour',
+            contours: {
+                coloring: 'heatmap',
+                showlabels: true,
+                labelfont: {
+                    family: 'Raleway',
+                    size: 12,
+                    color: 'white',
+                }
+            }
+        }
+    ],
+    layout: {
+        title: chart.parameters.fields,
+                xaxis: {title: 'Longitude'},
+                yaxis: {title: 'Latitude'}
+    }
+})
+
+const handleHistogram = (chart) => ({        
+        data: [
+            {
+            x: chart.data.map(row => row[chart.parameters.fields]),
+            name: chart.parameters.fields,
+            type: 'histogram',
+            marker: {color: '#17becf'}
+            }
+        ],
+        layout: {
+            title: `${chart.parameters.fields} - ${chart.subType}`,
+            xaxis: {title: chart.parameters.fields}
+        }          
+})
+
+const handleTimeSeries = (chart) => ({
+    data: [
+      {
+      x: chart.data.map(row => row.time),
+      y: chart.data.map(row => row[chart.parameters.fields]),
+      error_y: {
+        type: 'data',
+        array: chart.data.map(row => row[chart.parameters.fields + '_std']),
+        opacity: 0.2,
+        color: 'gray',
+        visible: true
+      },
+      name: chart.parameters.fields,
+      type: 'scatter',
+      line: {color: '#e377c2'},
+      },
+    ],
+    layout: {
+      title: `${chart.parameters.fields} - ${chart.subType}`,
+      xaxis: {title: 'Time'},
+      yaxis: {title: chart.parameters.fields}
+    }
+  })
+
+const handleSectionMap = (chart) => ({
+    data: [
+      {
+      x: chart.data.map(row => row.lat),
+      y: chart.data.map(row => row.depth),
+      z: chart.data.map(row => row[chart.parameters.fields]),
+      name: chart.parameters.fields,
+      type: 'heatmap',
+      }
+    ],
+    layout: {
+      title: `${chart.parameters.fields}`,
+      xaxis: {title: 'Latitude'},
+      yaxis: {autorange: 'reversed', title: 'Depth [m]'}
+    }
+  })
+
+const handleDepthProfile = (chart) => ({
+    data: [
+      {
+        x: chart.data.map(row => row.depth),
+        y: chart.data.map(row => row[chart.parameters.fields]),
+        error_y: {
+          type: 'data',
+          array: chart.data.map(row => row[chart.parameters.fields] + '_std'),
+          opacity: 0.2,
+          color: 'gray',
+          visible: true
+        },
+        name: chart.parameters.fields,
+        type: 'scatter',
+        line: {color: '#e377c2'},
+        },
+    ],
+    layout: {
+      title: chart.parameters.fields,
+      xaxis: {title: 'Depth [m]'},
+      yaxis: {title: chart.parameters.fields}
+    }
+  })
 
 class Charts extends Component {
 
     render(){
 
-        const data = [
-            {x: 0, y: 8},
-            {x: 1, y: 5},
-            {x: 2, y: 4},
-            {x: 3, y: 9},
-            {x: 4, y: 1},
-            {x: 5, y: 7},
-            {x: 6, y: 6},
-            {x: 7, y: 3},
-            {x: 8, y: 2},
-            {x: 9, y: 0}
-          ];
+        const { classes, charts } = this.props;
 
-        const { classes } = this.props;
+        const processedCharts = charts.map(chart => {
+            switch(chart.subType){
+                case 'Contour Map':
+                    return handleContourMap(chart);
+                case 'Histogram':
+                    return handleHistogram(chart);
+                case 'Time Series':
+                    return handleTimeSeries(chart);
+                case 'Section Map':
+                    return handleSectionMap(chart);
+                case 'Depth Profile':
+                    return handleDepthProfile(chart);
+                default:
+                    console.log(`Subtype not found: ${chart.subType}`);
+                    return null;
+            }
+        })
 
         return (
-            <div className={classes.chart}>
-                <XYPlot height={300} width= {300}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis />
-                <YAxis />
-                <VerticalBarSeries data={data} />
-                </XYPlot>
+            <div className={classes.chartsWrapper}>
+                {processedCharts.map((chart, index) => (
+                    <Plot
+                        key={index}
+                        layout= {chart.layout}
+                        data={chart.data}
+                    />
+                ))}
             </div>
         )
     }

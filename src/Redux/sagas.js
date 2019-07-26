@@ -10,6 +10,9 @@ import * as userActionTypes from './actionTypes/user';
 import * as catalogActionTypes from './actionTypes/catalog';
 import * as visualizationActionTypes from './actionTypes/visualization';
 
+import vizTypes from '../Enums/visualizationTypes';
+import vizSubTypes from '../Enums/visualizationSubTypes';
+
 import api from '../api';
 
 function* userLogin(action) {
@@ -98,14 +101,25 @@ function* queryRequest(action){
 }
 
 function* storedProcedureRequest(action){
+    console.log(`Retrieving ${action.payload.parameters.fields}`);
     yield put(visualizationActions.storedProcedureRequestProcessing());
     let result = yield call(api.visualization.storedProcedureRequest, action.payload.parameters);
+    console.log('Got result');
     if(!result){
         yield put(visualizationActions.storedProcedureRequestFailure());
         yield put(interfaceActions.snackbarOpen("Request failed"));
     } else {
-        yield put(visualizationActions.storedProcedureRequestSuccess({[action.payload.parameters.fields]:result}));
-        yield put(interfaceActions.snackbarOpen("Your dataset is ready"));
+        yield put(visualizationActions.storedProcedureRequestSuccess());
+        yield put(interfaceActions.snackbarOpen(`Your dataset ${action.payload.parameters.fields} is ready`));
+        
+        if(action.payload.type === vizTypes.chart){
+            console.log('Added chart');
+            yield put(visualizationActions.addChart({...action.payload, data: result}));
+        } else if (action.payload.type === vizTypes.map){
+            yield put(visualizationActions.clearMaps());
+            console.log('Added map');
+            yield put(visualizationActions.addMap({...action.payload, data: result}));           
+        }
     }
 }
 

@@ -94,7 +94,6 @@ class TopNavBar extends Component {
                         {this.props.user ? <Tab key='5' label={`Welcome ${this.props.user.firstName} ${this.props.user.lastName}!`}/> : ''}
                         {this.props.user ? <Tab key='4' label='Log Out' onClick={this.handleLogOut}/> : ''}                        
                         <Tab key='6' label='Debug' onClick={this.beepBoop}/>
-                        <Tab key='7' label='Charts' component={Link} to={{pathname: '/visualization/charts'}}/>
                     </Tabs>                    
                 </Toolbar>
                 {/* <LoginDialog clearState={this.clearState} username={this.state.username} password={this.state.password} handleChange={this.handleChange}/> */}

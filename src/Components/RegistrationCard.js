@@ -26,7 +26,7 @@ const RegistrationCard = (props) => {
 
     return (
         <Card className={classes.registrationCard}>
-            <Grid container spacing={16}>
+            <Grid container spacing={1}>
             {
                 fields.map((field, index) => {
                     return (

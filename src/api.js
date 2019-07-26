@@ -146,6 +146,7 @@ api.visualization.storedProcedureRequest = async(parameters) => {
             ndjsonParser.write(decoder.decode(chunk.value));
         };
     }
+
     return vizData;
 }
 
