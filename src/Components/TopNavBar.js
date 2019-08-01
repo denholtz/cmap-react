@@ -11,9 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import LoginDialog from './LoginDialog';
-
-import { showLoginDialog, restoreInterfaceDefaults } from '../Redux/actions/ui';
+import { showLoginDialog, restoreInterfaceDefaults, snackbarOpen } from '../Redux/actions/ui';
 import { logOut } from '../Redux/actions/user';
 
 const styles = theme => ({
@@ -29,7 +27,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = {
     showLoginDialog,
     logOut,
-    restoreInterfaceDefaults
+    restoreInterfaceDefaults,
+    snackbarOpen
 }
 
 class TopNavBar extends Component {
@@ -78,9 +77,14 @@ class TopNavBar extends Component {
         Cookies.get();
     };
 
+    snacks = () => {
+        console.log('Snacks');
+        this.props.snackbarOpen('Test');
+    }
+
     render(){
 
-        const { classes } = this.props;
+        // const { classes } = this.props;
 
         return (
             <AppBar position="sticky">
@@ -94,6 +98,7 @@ class TopNavBar extends Component {
                         {this.props.user ? <Tab key='5' label={`Welcome ${this.props.user.firstName} ${this.props.user.lastName}!`}/> : ''}
                         {this.props.user ? <Tab key='4' label='Log Out' onClick={this.handleLogOut}/> : ''}                        
                         <Tab key='6' label='Debug' onClick={this.beepBoop}/>
+                        <Tab key='7' label='Snacks!' onClick={this.snacks}/>
                     </Tabs>                    
                 </Toolbar>
                 {/* <LoginDialog clearState={this.clearState} username={this.state.username} password={this.state.password} handleChange={this.handleChange}/> */}

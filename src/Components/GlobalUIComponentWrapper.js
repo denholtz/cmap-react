@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 import LoginDialog from './LoginDialog';
-import SnackbarWrapper from '@material-ui/core/Snackbar'
+import SnackbarWrapper from './SnackbarWrapper'
 
 import { loginDialogWasCleared } from '../Redux/actions/user';
 
@@ -59,7 +59,7 @@ class GlobalUIComponentWrapper extends Component {
 
     render(){
 
-        const { classes } = this.props;
+        // const { classes } = this.props;
 
         return (
             <React.Fragment>    

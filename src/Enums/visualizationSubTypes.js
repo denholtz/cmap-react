@@ -4,8 +4,7 @@ const subTypes= {
     histogram: 'Histogram',
     depthProfile: 'Depth Profile',
     geospatialMap: 'Geospatial Map',
-    contourMap: 'Contour Map',
-    hexMap: 'Hex Map',
+    contourMap: 'Contour Map'
 }
 
 export default subTypes;

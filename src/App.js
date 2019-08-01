@@ -43,7 +43,6 @@ const theme = createMuiTheme({
 class App extends Component {
 
   componentDidCatch = (error, info) => {
-    alert('Something went wrong!');
     console.log('Error:');
     console.log(error);
     console.log('Info');

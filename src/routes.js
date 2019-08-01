@@ -5,9 +5,6 @@ import Home from './Components/Home';
 import Catalog from './Components/Catalog';
 import Register from './Components/Register';
 import Visualization from './Components/Visualization';
-import SnackbarWrapper from './Components/SnackbarWrapper';
-import Charts from './Components/Charts';
-import GlobalUIComponentWrapper from './Components/GlobalUIComponentWrapper';
 
 export default props => (
     <BrowserRouter>

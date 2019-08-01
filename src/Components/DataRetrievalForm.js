@@ -24,20 +24,18 @@ import {
     LeakAdd
 } from '@material-ui/icons';
 
-import { storedProcedureRequestSend } from '../Redux/actions/visualization';
-import { retrievalRequestSend } from '../Redux/actions/catalog';
-
-import vizTypes from '../Enums/visualizationTypes';
+// import vizTypes from '../Enums/visualizationTypes';
 import vizSubTypes from '../Enums/visualizationSubTypes';
 
 const styles = (theme) => ({
     dataRetrievalFormPaper: {
         width: '1200px',
-        height: '230px',
+        height: '205px',
         padding: theme.spacing(2.5),
-        position:'fixed',
-        left: '100px',
-        top: '10px',
+        // position:'fixed',
+        // top: '10px',
+        // left: '50%',
+        margin: '20px auto',
         zIndex: 2,
         paddingTop: theme.spacing(1.5)
     },
@@ -56,7 +54,7 @@ const styles = (theme) => ({
 
     visualizationSpeedDial: {
         position: 'relative',
-        top: '20px',
+        top: '5px',
         left: '30px'
     },
 
@@ -85,8 +83,6 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = {
-    storedProcedureRequestSend,
-    retrievalRequestSend
 }
 
 const visualizationSpeedDialActions = [
@@ -95,114 +91,13 @@ const visualizationSpeedDialActions = [
     {icon: <BarChart/>, name: vizSubTypes.histogram},
     {icon: <Waves/>, name: vizSubTypes.depthProfile},
     {icon: <Language/>, name: vizSubTypes.geospatialMap},
-    {icon: <LeakAdd/>, name: vizSubTypes.contourMap},
-    {icon: <Map/>, name: vizSubTypes.hexMap}
+    {icon: <LeakAdd/>, name: vizSubTypes.contourMap}
 ];
 
-const mapVizType = (vizType) => {
-    const mapping = {
-        [vizSubTypes.sectionMap]: {
-            sp: 'uspSectionMap',
-            type: vizTypes.chart,
-            subType: vizSubTypes.sectionMap
-        }, 
-        [vizSubTypes.timeSeries]: {
-            sp: 'uspTimeSeries',
-            type: vizTypes.chart,
-            subType: vizSubTypes.timeSeries
-        },
-        [vizSubTypes.histogram]: {
-            sp: 'uspSpaceTime',
-            type: vizTypes.chart,
-            subType: vizSubTypes.histogram
-        },
-        [vizSubTypes.depthProfile]: {
-            sp: 'uspDepthProfile',
-            type: vizTypes.chart,
-            subType: vizSubTypes.depthProfile
-        },
-        [vizSubTypes.geospatialMap]: {
-            sp: 'uspSpaceTime',
-            type: vizTypes.map,
-            subType: vizSubTypes.geospatialMap
-        },
-        [vizSubTypes.contourMap]: {
-            sp: 'uspSpaceTime',
-            type: vizTypes.chart,
-            subType: vizSubTypes.contourMap
-        },
-        [vizSubTypes.hexMap]: {
-            sp: 'uspSpaceTime',
-            type:vizTypes.map,
-            subType: vizSubTypes.hexMap
-        }
-    }
 
-    return mapping[vizType];
-}
 
 class DataRetrievalForm extends Component {
-    state = {
-        tableName: [],
-        fields:[],
-        depth1: '0',
-        depth2: '0',
-        dt1: '2017-05-15',
-        dt2: '2017-05-15',
-        lat1: '30',
-        lat2: '40',
-        lon1: '-60',
-        lon2: '-50',
-
-        visualizationSpeedDialOpen: false,
-    }
-
-    componentDidMount = () => {
-        if(!this.props.catalog) this.props.retrievalRequestSend();
-    }
-
-    handleChange = (event) => {
-        this.setState({[event.target.name]: event.target.value})
-    };
-
-    handleStartDateChange = (date) => {
-        this.setState({...this.state, dt1:date.toISOString().slice(0,10)});
-        // console.log(date);
-        // console.log(date.toISODate());
-    }
-
-    handleEndDateChange = (date) => {
-        this.setState({...this.state, dt2:date.toISOString().slice(0,10)});
-        // console.log(date);
-        // console.log(date.toISODate());
-    }
-
-    onVisualize = (vizType) => {
-        const { depth1, depth2, dt1, dt2, lat1, lat2, lon1, lon2 } = this.state;
-        let mapping = mapVizType(vizType);
-        let parameters = {
-            depth1,
-            depth2,
-            dt1,
-            dt2,
-            lat1,
-            lat2,
-            lon1,
-            lon2,
-            fields: this.state.fields && this.state.fields.map(field => field.value)[0],
-            tableName: this.state.fields && this.state.fields.map(field => field.data.tableName)[0],
-            spName: mapping.sp
-        };
-
-        let payload = {
-            parameters,
-            type: mapping.type,
-            subType: mapping.subType,
-            metaData: this.state.fields && this.state.fields[0]
-        }
-    
-        this.props.storedProcedureRequestSend(payload);
-    }
+    state = {visualizationSpeedDialOpen: false}
 
     // Includes every variable that returns true when filtering
     // variableWrapper parameter is {label, value, variable object}
@@ -218,27 +113,30 @@ class DataRetrievalForm extends Component {
         return !searchTerms.some(term => values.indexOf(term) === -1)
     }
 
-    // Update the "fields" state piece when the variables input changes
-    updateFields = (fields) => {
-        this.setState({fields});
-    }
-
     handleVisualizationSpeedDialClose = () => {
         this.setState({visualizationSpeedDialOpen: false});
     }
 
     handleVisualizationSpeedDialOpen = () => {
-        if(this.state.fields && this.state.fields.length) this.setState({visualizationSpeedDialOpen: true});
+        if(this.props.fields && this.props.fields.length) this.setState({visualizationSpeedDialOpen: true});
     }
 
     handleVisualizationSpeedDialClick= () => {
-        if(this.state.fields && this.state.fields.length) this.setState({visualizationSpeedDialOpen: !this.state.visualizationSpeedDialOpen});
+        if(this.props.fields && this.props.fields.length) this.setState({visualizationSpeedDialOpen: !this.state.visualizationSpeedDialOpen});
     }
 
     render() {
-        const { classes } = this.props;
-
-        const { fields } = this.state;
+        const { classes, 
+            fields, 
+            // tableName,
+            depth1,
+            depth2,
+            dt1,
+            dt2,
+            lat1,
+            lat2,
+            lon1,
+            lon2,  } = this.props;
 
         const options = (this.props.catalog && this.props.catalog.map(variable => ({
             value: variable.variable,
@@ -260,7 +158,7 @@ class DataRetrievalForm extends Component {
                             name="fields"
                             label="Variables"
                             options={options}
-                            onChange={this.updateFields}
+                            onChange={this.props.updateFields}
                             value={fields}
                             placeholder="Variables"
                             styles={{
@@ -276,8 +174,8 @@ class DataRetrievalForm extends Component {
                                     format='yyyy-MM-dd'
                                     disableFuture
                                     autoOk
-                                    value={this.state.dt1}
-                                    onChange={this.handleStartDateChange}
+                                    value={dt1}
+                                    onChange={this.props.handleStartDateChange}
                                     inputVariant='outlined'
                                     variant='inline'
                                     InputLabelProps={{
@@ -293,8 +191,8 @@ class DataRetrievalForm extends Component {
                                     format='yyyy-MM-dd'
                                     disableFuture
                                     autoOk
-                                    value={this.state.dt2}
-                                    onChange={this.handleEndDateChange}
+                                    value={dt2}
+                                    onChange={this.props.handleEndDateChange}
                                     inputVariant='outlined'
                                     variant='inline'
                                     InputLabelProps={{
@@ -310,8 +208,8 @@ class DataRetrievalForm extends Component {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.depth1}
-                                    onChange={this.handleChange}
+                                    value={depth1}
+                                    onChange={this.props.handleChange}
                                     variant='outlined'
                                 />
                             </Grid>  
@@ -323,8 +221,8 @@ class DataRetrievalForm extends Component {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.depth2}
-                                    onChange={this.handleChange}
+                                    value={depth2}
+                                    onChange={this.props.handleChange}
                                     variant='outlined'
                                 />
                             </Grid>
@@ -336,8 +234,8 @@ class DataRetrievalForm extends Component {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.lat1}
-                                    onChange={this.handleChange}
+                                    value={lat1}
+                                    onChange={this.props.handleChange}
                                     variant='outlined'
                                 />
                             </Grid>  
@@ -349,8 +247,8 @@ class DataRetrievalForm extends Component {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.lat2}
-                                    onChange={this.handleChange}
+                                    value={lat2}
+                                    onChange={this.props.handleChange}
                                     variant='outlined'
                                 />
                             </Grid>  
@@ -362,8 +260,8 @@ class DataRetrievalForm extends Component {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.lon1}
-                                    onChange={this.handleChange}
+                                    value={lon1}
+                                    onChange={this.props.handleChange}
                                     variant='outlined'
                                 />
                             </Grid>  
@@ -375,8 +273,8 @@ class DataRetrievalForm extends Component {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    value={this.state.lon2}
-                                    onChange={this.handleChange}
+                                    value={lon2}
+                                    onChange={this.props.handleChange}
                                     variant='outlined'
                                 />
                             </Grid>   
@@ -409,11 +307,10 @@ class DataRetrievalForm extends Component {
                                     key={action.name}
                                     icon={action.icon}
                                     tooltipTitle={action.name}
-                                    onClick={() => this.onVisualize(action.name)}
+                                    onClick={() => this.props.onVisualize(action.name)}
                                     tooltipPlacement='bottom'
                                 />
                             ))}
-
                         </SpeedDial>                            
                 </Paper>
             </div>

@@ -16,12 +16,14 @@ const mapDispatchToProps = {
 
 const SnackbarWrapper = (props) => {
     return (
+        
         <React.Fragment>
             <Snackbar 
                 autoHideDuration={3500} 
                 message={props.snackbarMessage}
                 onClose={props.snackbarClose}
                 open={props.snackbarIsOpen}
+                anchorOrigin={{horizontal:'center', vertical:'top'}}
             />
         </React.Fragment>
     )

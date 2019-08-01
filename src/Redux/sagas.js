@@ -11,7 +11,6 @@ import * as catalogActionTypes from './actionTypes/catalog';
 import * as visualizationActionTypes from './actionTypes/visualization';
 
 import vizTypes from '../Enums/visualizationTypes';
-import vizSubTypes from '../Enums/visualizationSubTypes';
 
 import api from '../api';
 
@@ -101,16 +100,17 @@ function* queryRequest(action){
 }
 
 function* storedProcedureRequest(action){
+    console.log(action);
     console.log(`Retrieving ${action.payload.parameters.fields}`);
     yield put(visualizationActions.storedProcedureRequestProcessing());
     let result = yield call(api.visualization.storedProcedureRequest, action.payload.parameters);
-    console.log('Got result');
+    console.log(`Got ${action.payload.parameters.fields}`);
     if(!result){
         yield put(visualizationActions.storedProcedureRequestFailure());
         yield put(interfaceActions.snackbarOpen("Request failed"));
     } else {
         yield put(visualizationActions.storedProcedureRequestSuccess());
-        yield put(interfaceActions.snackbarOpen(`Your dataset ${action.payload.parameters.fields} is ready`));
+        yield put(interfaceActions.snackbarOpen(`${action.payload.subType} ${action.payload.parameters.fields} is ready`));
         
         if(action.payload.type === vizTypes.chart){
             console.log('Added chart');

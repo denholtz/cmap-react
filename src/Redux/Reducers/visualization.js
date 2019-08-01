@@ -32,15 +32,9 @@ export default function(state, action) {
             charts: [...state.charts, action.payload.chartInfo]
         }
 
-        case visualizationActionTypes.CLEAR_CHARTS: return {
-            ...state,
-            charts: []
-        }
+        case visualizationActionTypes.CLEAR_CHARTS: return {...state, charts: []}
 
-        case visualizationActionTypes.CLEAR_MAPS: return {
-            ...state,
-            maps: []
-        }
+        case visualizationActionTypes.CLEAR_MAPS: return {...state, maps: []}
 
         default: return state;
     }

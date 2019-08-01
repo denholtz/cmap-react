@@ -11,7 +11,7 @@ import store from './Redux/store';
 import App from './App'
 
 import {LicenseManager} from "ag-grid-enterprise";
-LicenseManager.setLicenseKey("Evaluation_License-_Not_For_Production_Valid_Until_2_July_2019__MTU2MjAyMjAwMDAwMA==caa187fc06c8c340bcb9897b015a3cb5");
+LicenseManager.setLicenseKey("School_of_Oceanography_Simons_CMAP_1Devs_1Deployment_19_June_2020__MTU5MjUyMTIwMDAwMA==aec33f954c06d90afed06467402921bd");
 
 const rootElement = document.getElementById('root')
 ReactDOM.render(

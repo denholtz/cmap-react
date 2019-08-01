@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Plot from 'react-plotly.js';
 
-import subType from '../Enums/visualizationSubTypes';
+import vizSubTypes from '../Enums/visualizationSubTypes';
 
 const mapStateToProps = (state, ownProps) => ({
     charts: state.charts
@@ -21,7 +21,7 @@ const styles = (theme) => ({
     },
 
     chartsWrapper: {
-        margin: '300px 0 0 100px'
+        margin: '0 0 0 100px'
     }
 })
 
@@ -41,13 +41,18 @@ const handleContourMap = (chart) => ({
                     size: 12,
                     color: 'white',
                 }
+            },
+            colorbar: {
+                title: {
+                    text: `${chart.parameters.fields} - ${chart.metadata.unit}`
+                }
             }
         }
     ],
     layout: {
-        title: chart.parameters.fields,
-                xaxis: {title: 'Longitude'},
-                yaxis: {title: 'Latitude'}
+        title: `${chart.metadata.longName} - ${chart.subType}`,
+        xaxis: {title: 'Longitude'},
+        yaxis: {title: 'Latitude'}
     }
 })
 
@@ -61,8 +66,8 @@ const handleHistogram = (chart) => ({
             }
         ],
         layout: {
-            title: `${chart.parameters.fields} - ${chart.subType}`,
-            xaxis: {title: chart.parameters.fields}
+            title: `${chart.metadata.longName} - ${chart.subType}`,
+            xaxis: {title: `${chart.parameters.fields} - ${chart.metadata.unit}`}
         }          
 })
 
@@ -84,7 +89,7 @@ const handleTimeSeries = (chart) => ({
       },
     ],
     layout: {
-      title: `${chart.parameters.fields} - ${chart.subType}`,
+      title: `${chart.metadata.longName} - ${chart.subType}`,
       xaxis: {title: 'Time'},
       yaxis: {title: chart.parameters.fields}
     }
@@ -101,7 +106,7 @@ const handleSectionMap = (chart) => ({
       }
     ],
     layout: {
-      title: `${chart.parameters.fields}`,
+      title: `${chart.metadata.longName} - ${chart.subType}`,
       xaxis: {title: 'Latitude'},
       yaxis: {autorange: 'reversed', title: 'Depth [m]'}
     }
@@ -125,11 +130,34 @@ const handleDepthProfile = (chart) => ({
         },
     ],
     layout: {
-      title: chart.parameters.fields,
+      title: `${chart.metadata.longName} - ${chart.subType}`,
       xaxis: {title: 'Depth [m]'},
       yaxis: {title: chart.parameters.fields}
     }
   })
+
+const handleGeospatialMap = (chart) => ({
+    data:[
+        {
+            x: chart.data.map(row => row.lon),
+            y: chart.data.map(row => row.lat),
+            z: chart.data.map(row => row[chart.parameters.fields]),
+            name: chart.parameters.fields,
+            type: 'heatmap',
+            colorbar: {
+                title: {
+                    text: `${chart.parameters.fields} - ${chart.metadata.unit}`
+                }
+            }
+        }
+    ],
+    layout: {
+        title: `${chart.metadata.longName} - ${chart.subType}`,
+                xaxis: {title: 'Longitude'},
+                yaxis: {title: 'Latitude'}
+    }    
+})
+
 
 class Charts extends Component {
 
@@ -139,16 +167,18 @@ class Charts extends Component {
 
         const processedCharts = charts.map(chart => {
             switch(chart.subType){
-                case 'Contour Map':
+                case vizSubTypes.contourMap:
                     return handleContourMap(chart);
-                case 'Histogram':
+                case vizSubTypes.histogram:
                     return handleHistogram(chart);
-                case 'Time Series':
+                case vizSubTypes.timeSeries:
                     return handleTimeSeries(chart);
-                case 'Section Map':
+                case vizSubTypes.sectionMap:
                     return handleSectionMap(chart);
-                case 'Depth Profile':
+                case vizSubTypes.depthProfile:
                     return handleDepthProfile(chart);
+                case vizSubTypes.geospatialMap:
+                    return handleGeospatialMap(chart);
                 default:
                     console.log(`Subtype not found: ${chart.subType}`);
                     return null;

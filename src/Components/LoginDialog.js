@@ -62,7 +62,6 @@ class LoginDialog extends Component{
 
     render(){
         const { classes } = this.props;
-        
         return (
             <Dialog
                 open={this.props.loginDialogIsOpen}
@@ -74,42 +73,49 @@ class LoginDialog extends Component{
                     <DialogContentText>
                     Please enter your username and password to log in.
                     </DialogContentText>
+                    <form onSubmit={e => (e.preventDefault())}>
+                        <TextField
+                            autoFocus
+                            margin="normal"
+                            id="username"
+                            label="Username"
+                            type="text"
+                            variant='outlined'
+                            name='username'
+                            value={this.props.username}
+                            onChange={this.props.handleChange}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
 
-                    <TextField
-                        autoFocus
-                        margin="normal"
-                        id="username"
-                        label="Username"
-                        type="text"
-                        variant='outlined'
-                        name='username'
-                        value={this.props.username}
-                        onChange={this.props.handleChange}
-                    />
+                        <TextField
+                            margin="normal"
+                            id="name"
+                            label="Password"
+                            type="password"
+                            variant='outlined'
+                            name='password'
+                            value={this.props.password}
+                            onChange={this.props.handleChange}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
 
-                    <TextField
-                        margin="normal"
-                        id="name"
-                        label="Password"
-                        type="password"
-                        variant='outlined'
-                        name='password'
-                        value={this.props.password}
-                        onChange={this.props.handleChange}
-                    />
-
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
-                        </Button>
-
-                        <div className={classes.wrapper}>
-                            <Button color="primary" onClick={this.handleLogin} disabled={!this.props.username || !this.props.password}>
-                                Log In
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">
+                                Cancel
                             </Button>
-                            {this.props.userLoginState === states.inProgress && <CircularProgress size={24} className= {classes.buttonProgress} />}
-                        </div>
-                    </DialogActions>
+
+                            <div className={classes.wrapper}>
+                                <Button color="primary" type='submit' onClick={this.handleLogin} disabled={!this.props.username || !this.props.password}>
+                                    Log In
+                                </Button>
+                                {this.props.userLoginState === states.inProgress && <CircularProgress size={24} className= {classes.buttonProgress} />}
+                            </div>
+                        </DialogActions>
+                    </form>
                     {this.props.userLoginState === states.failed ?
                     <DialogContentText>
                         Login failed. Please try again.
