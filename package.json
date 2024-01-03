@@ -17,7 +17,7 @@
     "date-fns": "^2.0.0-beta.2",
     "js-cookie": "^2.2.0",
     "ndjson": "^1.5.0",
-    "plotly.js": "^1.48.3",
+    "plotly.js": "^2.25.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-map-gl": "^4.1.10",
